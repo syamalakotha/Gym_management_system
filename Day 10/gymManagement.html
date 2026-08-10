@@ -1,0 +1,1339 @@
+<template>
+
+    <!-- =====================================================
+         MEMBER LIST
+         ===================================================== -->
+
+    <template if:true={showMemberList}>
+
+        <div class="app-shell">
+
+            <!-- =================================================
+                 HEADER
+                 ================================================= -->
+
+            <div class="hero">
+
+                <div class="hero-content">
+
+                    <div class="brand-mark">
+
+                        <lightning-icon
+                            icon-name="utility:groups"
+                            size="small"
+                            alternative-text="Gym">
+                        </lightning-icon>
+
+                    </div>
+
+                    <div>
+
+                        <div class="eyebrow">
+                            GYM MANAGEMENT
+                        </div>
+
+                        <h1>
+                            Member Console
+                        </h1>
+
+                        <p>
+                            Manage members and monitor
+                            membership activity.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ADD MEMBER BUTTON -->
+
+                <lightning-button
+                    label="Add Member"
+                    icon-name="utility:add"
+                    variant="brand"
+                    onclick={handleAddMember}>
+                </lightning-button>
+
+            </div>
+
+
+            <!-- =================================================
+                 KPI CARDS
+                 ================================================= -->
+
+            <div class="kpi-grid">
+
+                <!-- TOTAL MEMBERS -->
+
+                <div class="kpi-card">
+
+                    <div class="kpi-icon blue">
+
+                        <lightning-icon
+                            icon-name="utility:groups"
+                            size="small"
+                            alternative-text="Total Members">
+                        </lightning-icon>
+
+                    </div>
+
+                    <div class="kpi-content">
+
+                        <span>
+                            Total Members
+                        </span>
+
+                        <strong>
+                            {totalMembers}
+                        </strong>
+
+                        <small>
+                            Registered members
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIVE MEMBERS -->
+
+                <div class="kpi-card">
+
+                    <div class="kpi-icon green">
+
+                        <lightning-icon
+                            icon-name="utility:success"
+                            size="small"
+                            alternative-text="Active Members">
+                        </lightning-icon>
+
+                    </div>
+
+                    <div class="kpi-content">
+
+                        <span>
+                            Active Members
+                        </span>
+
+                        <strong>
+                            {activeMembers}
+                        </strong>
+
+                        <small>
+                            Currently active
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EXPIRED MEMBERS -->
+
+                <div class="kpi-card">
+
+                    <div class="kpi-icon orange">
+
+                        <lightning-icon
+                            icon-name="utility:warning"
+                            size="small"
+                            alternative-text="Expired Members">
+                        </lightning-icon>
+
+                    </div>
+
+                    <div class="kpi-content">
+
+                        <span>
+                            Expired Members
+                        </span>
+
+                        <strong>
+                            {expiredMembers}
+                        </strong>
+
+                        <small>
+                            Requires attention
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 MEMBER DIRECTORY
+                 ================================================= -->
+
+            <div class="members-card">
+
+                <!-- MEMBER HEADER -->
+
+                <div class="members-header">
+
+                    <div>
+
+                        <span class="section-label">
+                            MEMBER DIRECTORY
+                        </span>
+
+                        <h2>
+                            All Members
+                        </h2>
+
+                        <p>
+                            Search and manage your
+                            gym members.
+                        </p>
+
+                    </div>
+
+
+                    <div class="member-counter">
+
+                        <strong>
+                            {filteredMembers.length}
+                        </strong>
+
+                        <span>
+                            members
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     FILTER BAR
+                     ================================================= -->
+
+                <div class="filter-bar">
+
+                    <!-- SEARCH -->
+
+                    <div class="search-wrapper">
+
+                        <lightning-icon
+                            icon-name="utility:search"
+                            size="x-small"
+                            alternative-text="Search">
+                        </lightning-icon>
+
+                        <lightning-input
+                            type="search"
+                            variant="label-hidden"
+                            placeholder="Search by name, phone, email or member ID..."
+                            value={searchKey}
+                            onchange={handleSearch}>
+                        </lightning-input>
+
+                    </div>
+
+
+                    <!-- STATUS -->
+
+                    <lightning-combobox
+                        label="Status"
+                        variant="label-hidden"
+                        value={selectedStatus}
+                        options={statusOptions}
+                        onchange={handleStatusChange}>
+                    </lightning-combobox>
+
+                </div>
+
+
+                <!-- =================================================
+                     MEMBER TABLE
+                     ================================================= -->
+
+                <div class="table-wrapper">
+
+                    <template if:true={filteredMembers.length}>
+
+                        <table class="member-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Member
+                                    </th>
+
+                                    <th>
+                                        Member ID
+                                    </th>
+
+                                    <th>
+                                        Phone
+                                    </th>
+
+                                    <th>
+                                        Join Date
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                <template
+                                    for:each={filteredMembers}
+                                    for:item="member">
+
+                                    <tr key={member.Id}>
+
+                                        <!-- MEMBER -->
+
+                                        <td>
+
+                                            <div class="member-cell">
+
+                                                <div class="avatar">
+                                                    {member.initial}
+                                                </div>
+
+                                                <div class="member-details">
+
+                                                    <strong>
+                                                        {member.Name}
+                                                    </strong>
+
+                                                    <span>
+                                                        {member.Email__c}
+                                                    </span>
+
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <!-- MEMBER ID -->
+
+                                        <td>
+
+                                            <span class="member-id">
+                                                {member.Member_ID__c}
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- PHONE -->
+
+                                        <td>
+
+                                            <span class="secondary-text">
+                                                {member.Phone__c}
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- JOIN DATE -->
+
+                                        <td>
+
+                                            <span class="secondary-text">
+                                                {member.Join_Date__c}
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- STATUS -->
+
+                                        <td>
+
+                                            <span
+                                                class={member.statusClass}>
+
+                                                <span class="status-dot"></span>
+
+                                                {member.Status__c}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- VIEW -->
+
+                                        <td class="action-cell">
+
+                                            <button
+                                                class="view-button"
+                                                data-id={member.Id}
+                                                onclick={handleViewMember}>
+
+                                                View
+
+                                                <lightning-icon
+                                                    icon-name="utility:chevronright"
+                                                    size="xx-small"
+                                                    alternative-text="View">
+                                                </lightning-icon>
+
+                                            </button>
+
+                                        </td>
+
+                                    </tr>
+
+                                </template>
+
+                            </tbody>
+
+                        </table>
+
+                    </template>
+
+
+                    <!-- NO MEMBERS -->
+
+                    <template if:false={filteredMembers.length}>
+
+                        <div class="empty-state">
+
+                            <div class="empty-icon">
+
+                                <lightning-icon
+                                    icon-name="utility:search"
+                                    size="small"
+                                    alternative-text="No members">
+                                </lightning-icon>
+
+                            </div>
+
+                            <h3>
+                                No members found
+                            </h3>
+
+                            <p>
+                                Try changing your search
+                                or status filter.
+                            </p>
+
+                        </div>
+
+                    </template>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </template>
+
+
+    <!-- =====================================================
+         MEMBER PROFILE
+         ===================================================== -->
+
+    <template if:true={showMemberDetails}>
+
+        <div class="profile-shell">
+
+
+            <!-- =================================================
+                 PROFILE HEADER
+                 ================================================= -->
+
+            <div class="profile-hero">
+
+                <button
+                    class="back-button"
+                    onclick={handleBackToMembers}>
+
+                    <lightning-icon
+                        icon-name="utility:back"
+                        size="x-small"
+                        alternative-text="Back">
+                    </lightning-icon>
+
+                    Back to Members
+
+                </button>
+
+
+                <div class="profile-main">
+
+                    <div class="profile-avatar">
+                        {selectedMember.initial}
+                    </div>
+
+
+                    <div class="profile-title">
+
+                        <div class="eyebrow">
+                            MEMBER PROFILE
+                        </div>
+
+                        <h1>
+                            {selectedMember.Name}
+                        </h1>
+
+                        <div class="profile-meta">
+                            {selectedMember.Member_ID__c}
+                        </div>
+
+                    </div>
+
+
+                    <span
+                        class={selectedMember.statusClass}>
+
+                        <span class="status-dot"></span>
+
+                        {selectedMember.Status__c}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 PROFILE CONTENT
+                 ================================================= -->
+
+            <div class="profile-content">
+
+
+                <!-- =================================================
+                     SUMMARY
+                     ================================================= -->
+
+                <div class="profile-stats">
+
+
+                    <!-- MEMBERSHIP -->
+
+                    <div class="profile-stat">
+
+                        <span>
+                            Membership
+                        </span>
+
+                        <strong>
+
+                            <template if:true={activeMembership}>
+
+                                {activeMembership.Membership_Type__c}
+
+                            </template>
+
+                            <template if:false={activeMembership}>
+
+                                No Membership
+
+                            </template>
+
+                        </strong>
+
+                    </div>
+
+
+                    <!-- FEE -->
+
+                    <div class="profile-stat">
+
+                        <span>
+                            Membership Fee
+                        </span>
+
+                        <strong>
+
+                            <template if:true={activeMembership}>
+
+                                ₹{activeMembership.Fee__c}
+
+                            </template>
+
+                            <template if:false={activeMembership}>
+
+                                —
+
+                            </template>
+
+                        </strong>
+
+                    </div>
+
+
+                    <!-- END DATE -->
+
+                    <div class="profile-stat">
+
+                        <span>
+                            Membership End
+                        </span>
+
+                        <strong>
+
+                            <template if:true={activeMembership}>
+
+                                {activeMembership.End_Date__c}
+
+                            </template>
+
+                            <template if:false={activeMembership}>
+
+                                —
+
+                            </template>
+
+                        </strong>
+
+                    </div>
+
+
+                    <!-- LAST PAYMENT -->
+
+                    <div class="profile-stat">
+
+                        <span>
+                            Last Payment
+                        </span>
+
+                        <strong>
+
+                            <template if:true={selectedMember.Last_Payment_Date__c}>
+
+                                {selectedMember.Last_Payment_Date__c}
+
+                            </template>
+
+                            <template if:false={selectedMember.Last_Payment_Date__c}>
+
+                                —
+
+                            </template>
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     PERSONAL INFORMATION
+                     ================================================= -->
+
+                <div class="detail-card">
+
+                    <div class="detail-header">
+
+                        <span class="section-label">
+                            PROFILE
+                        </span>
+
+                        <h2>
+                            Personal Information
+                        </h2>
+
+                    </div>
+
+
+                    <div class="detail-grid">
+
+
+                        <!-- PHONE -->
+
+                        <div class="detail-item">
+
+                            <span>
+                                Phone
+                            </span>
+
+                            <strong>
+                                {selectedMember.Phone__c}
+                            </strong>
+
+                        </div>
+
+
+                        <!-- EMAIL -->
+
+                        <div class="detail-item">
+
+                            <span>
+                                Email
+                            </span>
+
+                            <strong>
+                                {selectedMember.Email__c}
+                            </strong>
+
+                        </div>
+
+
+                        <!-- GENDER -->
+
+                        <div class="detail-item">
+
+                            <span>
+                                Gender
+                            </span>
+
+                            <strong>
+                                {selectedMember.Gender__c}
+                            </strong>
+
+                        </div>
+
+
+                        <!-- DOB -->
+
+                        <div class="detail-item">
+
+                            <span>
+                                Date of Birth
+                            </span>
+
+                            <strong>
+                                {selectedMember.Date_of_Birth__c}
+                            </strong>
+
+                        </div>
+
+
+                        <!-- AGE -->
+
+                        <div class="detail-item">
+
+                            <span>
+                                Age
+                            </span>
+
+                            <strong>
+                                {selectedMember.Age__c}
+                            </strong>
+
+                        </div>
+
+
+                        <!-- TRAINING GOAL -->
+
+                        <div class="detail-item">
+
+                            <span>
+                                Training Goal
+                            </span>
+
+                            <strong>
+                                {selectedMember.Training_Goal_c__c}
+                            </strong>
+
+                        </div>
+
+
+                        <!-- JOIN DATE -->
+
+                        <div class="detail-item">
+
+                            <span>
+                                Join Date
+                            </span>
+
+                            <strong>
+                                {selectedMember.Join_Date__c}
+                            </strong>
+
+                        </div>
+
+
+                        <!-- ADDRESS -->
+
+                        <div class="detail-item">
+
+                            <span>
+                                Address
+                            </span>
+
+                            <strong>
+                                {selectedMember.Address__c}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     MEMBERSHIP OVERVIEW
+                     ================================================= -->
+
+                <div class="detail-card">
+
+                    <div class="detail-header">
+
+                        <span class="section-label">
+                            MEMBERSHIP
+                        </span>
+
+                        <h2>
+                            Membership Overview
+                        </h2>
+
+                    </div>
+
+
+                    <!-- LOADING -->
+
+                    <template if:true={isLoadingDetails}>
+
+                        <div class="loading-state">
+
+                            <lightning-spinner
+                                alternative-text="Loading membership">
+                            </lightning-spinner>
+
+                        </div>
+
+                    </template>
+
+
+                    <!-- CONTENT -->
+
+                    <template if:false={isLoadingDetails}>
+
+
+                        <!-- HAS MEMBERSHIP -->
+
+                        <template if:true={hasMembership}>
+
+                            <div class="membership-table-wrapper">
+
+                                <table class="detail-table">
+
+                                    <thead>
+
+                                        <tr>
+
+                                            <th>
+                                                Type
+                                            </th>
+
+                                            <th>
+                                                Fee
+                                            </th>
+
+                                            <th>
+                                                Start
+                                            </th>
+
+                                            <th>
+                                                End
+                                            </th>
+
+                                            <th>
+                                                Trainer
+                                            </th>
+
+                                            <th>
+                                                Status
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+
+
+                                    <tbody>
+
+                                        <template
+                                            for:each={memberships}
+                                            for:item="membership">
+
+                                            <tr key={membership.Id}>
+
+
+                                                <td>
+
+                                                    <strong>
+                                                        {membership.Membership_Type__c}
+                                                    </strong>
+
+                                                </td>
+
+
+                                                <td>
+                                                    ₹{membership.Fee__c}
+                                                </td>
+
+
+                                                <td>
+                                                    {membership.Start_Date__c}
+                                                </td>
+
+
+                                                <td>
+                                                    {membership.End_Date__c}
+                                                </td>
+
+
+                                                <td>
+                                                    {membership.trainerName}
+                                                </td>
+
+
+                                                <td>
+
+                                                    <span
+                                                        class={membership.statusClass}>
+
+                                                        <span class="status-dot"></span>
+
+                                                        {membership.Status__c}
+
+                                                    </span>
+
+                                                </td>
+
+                                            </tr>
+
+                                        </template>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </template>
+
+
+                        <!-- NO MEMBERSHIP -->
+
+                        <template if:false={hasMembership}>
+
+                            <div class="empty-detail">
+
+                                <div class="empty-detail-icon">
+
+                                    <lightning-icon
+                                        icon-name="utility:apps"
+                                        size="small"
+                                        alternative-text="No membership">
+                                    </lightning-icon>
+
+                                </div>
+
+                                <strong>
+                                    No membership found
+                                </strong>
+
+                                <p>
+                                    This member does not have
+                                    a membership record yet.
+                                </p>
+
+                            </div>
+
+                        </template>
+
+                    </template>
+
+                </div>
+
+
+                <!-- =================================================
+                     PAYMENT HISTORY
+                     ================================================= -->
+
+                <div class="detail-card">
+
+                    <div class="detail-header">
+
+                        <span class="section-label">
+                            PAYMENTS
+                        </span>
+
+                        <h2>
+                            Payment History
+                        </h2>
+
+                    </div>
+
+
+                    <!-- LOADING -->
+
+                    <template if:true={isLoadingDetails}>
+
+                        <div class="loading-state">
+
+                            <lightning-spinner
+                                alternative-text="Loading payments">
+                            </lightning-spinner>
+
+                        </div>
+
+                    </template>
+
+
+                    <!-- CONTENT -->
+
+                    <template if:false={isLoadingDetails}>
+
+
+                        <!-- HAS PAYMENTS -->
+
+                        <template if:true={hasPayments}>
+
+                            <div class="membership-table-wrapper">
+
+                                <table class="detail-table">
+
+                                    <thead>
+
+                                        <tr>
+
+                                            <th>
+                                                Payment ID
+                                            </th>
+
+                                            <th>
+                                                Date
+                                            </th>
+
+                                            <th>
+                                                Amount
+                                            </th>
+
+                                            <th>
+                                                Method
+                                            </th>
+
+                                            <th>
+                                                Status
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+
+
+                                    <tbody>
+
+                                        <template
+                                            for:each={payments}
+                                            for:item="payment">
+
+                                            <tr key={payment.Id}>
+
+
+                                                <td>
+
+                                                    <span class="member-id">
+                                                        {payment.Name}
+                                                    </span>
+
+                                                </td>
+
+
+                                                <td>
+                                                    {payment.Payment_Date__c}
+                                                </td>
+
+
+                                                <td>
+
+                                                    <strong>
+                                                        ₹{payment.Amount__c}
+                                                    </strong>
+
+                                                </td>
+
+
+                                                <td>
+                                                    {payment.Payment_Method__c}
+                                                </td>
+
+
+                                                <td>
+
+                                                    <span
+                                                        class={payment.statusClass}>
+
+                                                        <span class="status-dot"></span>
+
+                                                        {payment.Payment_Status__c}
+
+                                                    </span>
+
+                                                </td>
+
+                                            </tr>
+
+                                        </template>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </template>
+
+
+                        <!-- NO PAYMENTS -->
+
+                        <template if:false={hasPayments}>
+
+                            <div class="empty-detail">
+
+                                <div class="empty-detail-icon">
+
+                                    <lightning-icon
+                                        icon-name="utility:money"
+                                        size="small"
+                                        alternative-text="No payments">
+                                    </lightning-icon>
+
+                                </div>
+
+                                <strong>
+                                    No payment history
+                                </strong>
+
+                                <p>
+                                    No payment records are available
+                                    for this member.
+                                </p>
+
+                            </div>
+
+                        </template>
+
+                    </template>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </template>
+
+
+    <!-- =====================================================
+         ADD MEMBER MODAL
+         ===================================================== -->
+
+    <template if:true={showAddMember}>
+
+        <section
+            role="dialog"
+            tabindex="-1"
+            aria-modal="true"
+            class="modal-backdrop">
+
+
+            <div class="add-member-modal">
+
+
+                <!-- =================================================
+                     MODAL HEADER
+                     ================================================= -->
+
+                <div class="modal-header">
+
+                    <div>
+
+                        <span class="section-label">
+                            GYM MANAGEMENT
+                        </span>
+
+                        <h2>
+                            Add New Member
+                        </h2>
+
+                        <p>
+                            Create a new gym member profile.
+                        </p>
+
+                    </div>
+
+
+                    <!-- CLOSE -->
+
+                    <button
+                        class="modal-close"
+                        onclick={handleCloseAddMember}
+                        title="Close">
+
+                        <lightning-icon
+                            icon-name="utility:close"
+                            size="small"
+                            alternative-text="Close">
+                        </lightning-icon>
+
+                    </button>
+
+                </div>
+
+
+                <!-- =================================================
+                     MODAL BODY
+                     ================================================= -->
+
+                <div class="modal-body">
+
+
+                    <!-- =================================================
+                         GYM MEMBER RECORD FORM
+                         ================================================= -->
+
+                    <lightning-record-edit-form
+                        object-api-name="Gym_Member__c"
+                        onsuccess={handleMemberCreated}
+                        onerror={handleMemberError}>
+
+
+                        <!-- =================================================
+                             FORM GRID
+                             ================================================= -->
+
+                        <div class="form-grid">
+
+
+                            <!-- NAME -->
+
+                            <lightning-input-field
+                                field-name="Name"
+                                required>
+                            </lightning-input-field>
+
+
+                            <!-- PHONE -->
+
+                            <lightning-input-field
+                                field-name="Phone__c">
+                            </lightning-input-field>
+
+
+                            <!-- EMAIL -->
+
+                            <lightning-input-field
+                                field-name="Email__c">
+                            </lightning-input-field>
+
+
+                            <!-- GENDER -->
+
+                            <lightning-input-field
+                                field-name="Gender__c">
+                            </lightning-input-field>
+
+
+                            <!-- DATE OF BIRTH -->
+
+                            <lightning-input-field
+                                field-name="Date_of_Birth__c">
+                            </lightning-input-field>
+
+
+                            <!-- AGE -->
+
+                            <lightning-input-field
+                                field-name="Age__c">
+                            </lightning-input-field>
+
+
+                            <!-- JOIN DATE -->
+
+                            <lightning-input-field
+                                field-name="Join_Date__c">
+                            </lightning-input-field>
+
+
+                            <!-- TRAINING GOAL -->
+
+                            <lightning-input-field
+                                field-name="Training_Goal_c__c">
+                            </lightning-input-field>
+
+
+                            <!-- STATUS -->
+
+                            <lightning-input-field
+                                field-name="Status__c">
+                            </lightning-input-field>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             ADDRESS
+                             ================================================= -->
+
+                        <div class="full-width-field">
+
+                            <lightning-input-field
+                                field-name="Address__c">
+                            </lightning-input-field>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             MODAL FOOTER
+                             ================================================= -->
+
+                        <div class="modal-footer">
+
+
+                            <!-- CANCEL -->
+
+                            <lightning-button
+                                label="Cancel"
+                                onclick={handleCloseAddMember}>
+                            </lightning-button>
+
+
+                            <!-- CREATE -->
+
+                            <lightning-button
+                                type="submit"
+                                label="Create Member"
+                                variant="brand"
+                                icon-name="utility:add">
+                            </lightning-button>
+
+                        </div>
+
+
+                    </lightning-record-edit-form>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </template>
+
+</template>
